@@ -2,7 +2,7 @@ import AppKit
 import Combine
 
 enum NotchTab: String, CaseIterable, Identifiable {
-    case home, shelf, clipboard, timer, mirror
+    case home, shelf, clipboard, stats, timer, mirror
     var id: String { rawValue }
 
     var symbol: String {
@@ -10,6 +10,7 @@ enum NotchTab: String, CaseIterable, Identifiable {
         case .home: return "house.fill"
         case .shelf: return "tray.full.fill"
         case .clipboard: return "doc.on.clipboard.fill"
+        case .stats: return "cpu"
         case .timer: return "timer"
         case .mirror: return "camera.fill"
         }
@@ -20,6 +21,7 @@ enum NotchTab: String, CaseIterable, Identifiable {
         case .home: return "Home"
         case .shelf: return "Shelf"
         case .clipboard: return "Clipboard"
+        case .stats: return "System Stats"
         case .timer: return "Focus"
         case .mirror: return "Mirror"
         }
@@ -44,7 +46,7 @@ final class NotchModel: ObservableObject {
 
     /// Physical notch size of the screen we're on (or a simulated one).
     @Published var notchSize = CGSize(width: 200, height: 32)
-    let expandedSize = CGSize(width: 620, height: 196)
+    let expandedSize = CGSize(width: 700, height: 200)
 
     private var hudWork: DispatchWorkItem?
 

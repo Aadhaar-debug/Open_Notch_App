@@ -12,6 +12,7 @@ final class Services {
     let clipboard = ClipboardService()
     let focus = FocusTimer()
     let calendar = CalendarService()
+    let stats = SystemStats()
     let volume = VolumeService()
     let battery = BatteryService()
     let bluetooth = BluetoothService()

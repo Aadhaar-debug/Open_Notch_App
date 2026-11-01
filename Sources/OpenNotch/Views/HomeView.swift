@@ -5,13 +5,15 @@ struct HomeView: View {
     @AppStorage(Settings.showCalendar) private var showCalendar = true
 
     var body: some View {
-        HStack(alignment: .top, spacing: 16) {
+        HStack(alignment: .top, spacing: 14) {
             NowPlayingView()
                 .frame(maxWidth: .infinity, alignment: .leading)
             if showCalendar {
                 Divider().overlay(Color.white.opacity(0.15))
                 CalendarPanel()
-                    .frame(width: 210, alignment: .topLeading)
+                    .frame(width: 150, alignment: .topLeading)
+                MonthGridView()
+                    .frame(width: 150)
             }
         }
     }
@@ -22,14 +24,14 @@ struct NowPlayingView: View {
 
     var body: some View {
         HStack(spacing: 14) {
-            ArtworkView(image: media.artwork, size: 104, corner: 14)
+            ArtworkView(image: media.artwork, size: 92, corner: 14)
                 .onTapGesture { media.openSourceApp() }
                 .shadow(color: .black.opacity(0.4), radius: 6, y: 3)
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(media.hasTrack ? media.title : "Nothing playing")
-                    .font(.system(size: 15, weight: .semibold))
-                    .lineLimit(1)
+                    .font(.system(size: 14, weight: .semibold))
+                    .lineLimit(2)
                 Text(media.hasTrack ? media.artist : "Play something in Music, Spotify or your browser")
                     .font(.system(size: 12))
                     .foregroundStyle(.gray)
@@ -54,7 +56,7 @@ struct NowPlayingView: View {
                         .opacity(media.hasTrack ? 1 : 0)
                 }
             }
-            .frame(height: 104)
+            .frame(height: 92)
         }
         .onAppear { media.refresh() }
     }
@@ -83,7 +85,7 @@ struct CalendarPanel: View {
     @EnvironmentObject private var calendar: CalendarService
 
     private static let dayFormat: DateFormatter = {
-        let f = DateFormatter(); f.dateFormat = "EEEE, d MMM"; return f
+        let f = DateFormatter(); f.dateFormat = "EEE, d MMM"; return f
     }()
     private static let timeFormat: DateFormatter = {
         let f = DateFormatter(); f.timeStyle = .short; return f
@@ -91,23 +93,25 @@ struct CalendarPanel: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text(Self.dayFormat.string(from: Date()))
+            Text(Self.dayFormat.string(from: calendar.selectedDate))
                 .font(.system(size: 13, weight: .semibold))
+                .lineLimit(1)
             if calendar.denied {
                 Text("Calendar access is off. Enable it in System Settings › Privacy & Security › Calendars.")
                     .font(.system(size: 11)).foregroundStyle(.gray)
             } else if calendar.events.isEmpty {
-                Text(calendar.authorized ? "No more events today" : "Loading…")
+                Text(!calendar.authorized ? "Loading…" : calendar.isSelectedToday ? "No more events today" : "No events")
                     .font(.system(size: 11)).foregroundStyle(.gray)
             } else {
-                ForEach(calendar.events, id: \.eventIdentifier) { event in
+                ForEach(calendar.events.prefix(3), id: \.eventIdentifier) { event in
                     HStack(alignment: .top, spacing: 6) {
                         RoundedRectangle(cornerRadius: 1.5)
                             .fill(Color(cgColor: event.calendar.cgColor))
                             .frame(width: 3, height: 26)
                         VStack(alignment: .leading, spacing: 1) {
                             Text(event.title ?? "Event").font(.system(size: 12, weight: .medium)).lineLimit(1)
-                            Text("\(Self.timeFormat.string(from: event.startDate)) – \(Self.timeFormat.string(from: event.endDate))")
+                            Text(event.isAllDay ? "All day"
+                                 : "\(Self.timeFormat.string(from: event.startDate)) – \(Self.timeFormat.string(from: event.endDate))")
                                 .font(.system(size: 10)).foregroundStyle(.gray)
                         }
                     }

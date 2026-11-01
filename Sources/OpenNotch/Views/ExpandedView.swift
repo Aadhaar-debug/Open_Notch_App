@@ -14,6 +14,7 @@ struct ExpandedView: View {
                 case .home: HomeView()
                 case .shelf: ShelfView()
                 case .clipboard: ClipboardView()
+                case .stats: StatsView()
                 case .timer: FocusView()
                 case .mirror: MirrorView()
                 }

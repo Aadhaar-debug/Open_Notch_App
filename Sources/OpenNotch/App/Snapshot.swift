@@ -21,6 +21,7 @@ enum Snapshot {
                 .environmentObject(services.clipboard)
                 .environmentObject(services.focus)
                 .environmentObject(services.calendar)
+                .environmentObject(services.stats)
                 .transaction { $0.animation = nil }
                 .background(Color(white: 0.75))
             let view = NSHostingView(rootView: root)
@@ -42,6 +43,7 @@ enum Snapshot {
         render("hud-battery")
         model.hud = nil
         model.isExpanded = true
+        for _ in 0..<3 { services.stats.sample(); Thread.sleep(forTimeInterval: 0.5) }
         for tab in NotchTab.allCases where tab != .mirror {
             model.tab = tab
             render("tab-\(tab.rawValue)")

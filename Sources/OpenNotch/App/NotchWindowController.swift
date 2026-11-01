@@ -53,6 +53,7 @@ final class NotchWindowController: NSObject {
             .environmentObject(services.clipboard)
             .environmentObject(services.focus)
             .environmentObject(services.calendar)
+            .environmentObject(services.stats)
         let hosting = NSHostingView(rootView: root)
         hosting.sizingOptions = []
         panel.contentView = hosting

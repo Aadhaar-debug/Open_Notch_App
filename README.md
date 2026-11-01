@@ -16,9 +16,10 @@ NotchNook, Droppy and Seam. It contains no code or assets from those apps.
 | **File shelf** | Drag files onto the notch to keep them on hand, then drag them out wherever you need them. AirDrop, compress/uncompress, reveal in Finder, copy path. Files are kept by reference, never copied. |
 | **AirDrop drop zone** | Drop files straight onto the AirDrop tile to share them. |
 | **Clipboard history** | The last 40 text/image copies; click one to copy it again. Kept in memory only, and items that password managers mark as concealed are skipped. |
+| **System stats** | Live CPU (user/system), memory used + swap, GPU load and memory, network down/up speed, storage free, with one-minute history charts; plus uptime, load average, thermal state and battery. Sampled once a second only while the tab is open. |
 | **Focus timer** | Pomodoro with adjustable focus and break lengths, with a countdown in the closed notch. |
 | **Mirror** | A quick camera check. The camera is only on while the tab is open. |
-| **Calendar** | Today's remaining events on the Home tab. |
+| **Calendar** | A month calendar on the Home tab (today highlighted, dots on days with events, ‹ › to change month, click the month name for today) next to the selected day's agenda. Click any day to see its events. |
 | **Live activities** | Volume HUD, charger connected/disconnected, low battery (20/10/5%), Bluetooth/AirPods connect and disconnect, focus session finished. |
 | **Any Mac** | On Macs or external displays without a notch, it draws a simulated one. |
 | **Open at login** | Registers itself under System Settings › General › Login Items on first launch (toggle in Settings). |
@@ -79,7 +80,8 @@ Because the app is ad-hoc signed, macOS may ask again after you rebuild it.
   (MediaRemote). Instead of working around that protection, OpenNotch uses public APIs: CoreAudio
   says which app is producing sound, and the browser's own AppleScript dictionary says which tab.
   While a browser plays, the tab is re-read every 6 s so autoplay's next video shows up.
-- Run `.build/release/OpenNotch --now-playing` to print what the detector currently sees.
+- Run `.build/release/OpenNotch --now-playing` to print what the detector currently sees, or
+  `--stats` to print a sample of the system stats.
 - `@State` isn't used: in recent SDKs it's a macro that needs Xcode's plugin. A tiny `StateBox`
   observable keeps the project buildable with only the Command Line Tools.
 
