@@ -44,8 +44,8 @@ Measured on an M-series MacBook: ~0% CPU at idle and ~17 MB of memory.
 Requires macOS 14+ and the Xcode Command Line Tools (`xcode-select --install`). Full Xcode is not needed.
 
 ```bash
-git clone https://github.com/<you>/OpenNotch.git
-cd OpenNotch
+git clone https://github.com/Aadhaar-debug/Open_Notch_App.git
+cd Open_Notch_App
 ./scripts/install.sh
 ```
 
