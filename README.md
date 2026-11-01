@@ -12,7 +12,7 @@ NotchNook, Droppy and Seam. It contains no code or assets from those apps.
 | | |
 |---|---|
 | **Hover to open** | Hover over the notch and it opens; move away (or press Esc / click outside) and it closes. The menu bar under the notch stays clickable. |
-| **Now playing** | Artwork, title, artist and play/pause/next/previous. While music plays, the closed notch shows the artwork and an animated equalizer. Works with Music and Spotify, plus every player on macOS versions where Apple's MediaRemote is readable. |
+| **Now playing** | Artwork, title, artist and play/pause/next/previous for **anything making sound**. YouTube, Spotify Web, Netflix, SoundCloud and other media tabs in Chrome, Edge, Brave, Arc, Vivaldi, Opera and Safari show the video/track title, with YouTube thumbnails as artwork. Music and Spotify show full track info and artwork. Any other app (VLC, IINA, games, calls…) shows its name and icon. While something plays, the closed notch shows the artwork and an animated equalizer. |
 | **File shelf** | Drag files onto the notch to keep them on hand, then drag them out wherever you need them. AirDrop, compress/uncompress, reveal in Finder, copy path. Files are kept by reference, never copied. |
 | **AirDrop drop zone** | Drop files straight onto the AirDrop tile to share them. |
 | **Clipboard history** | The last 40 text/image copies; click one to copy it again. Kept in memory only, and items that password managers mark as concealed are skipped. |
@@ -27,7 +27,8 @@ NotchNook, Droppy and Seam. It contains no code or assets from those apps.
 
 The app is built to cost nothing while idle:
 
-- Everything is event driven: CoreAudio property listeners for volume, IOKit power notifications for
+- Everything is event driven: CoreAudio property listeners for volume and for which app is playing
+  audio, IOKit power notifications for
   battery, IOBluetooth connect notifications, distributed notifications for Music/Spotify, and
   EventKit change notifications.
 - The panel never resizes. Only a SwiftUI shape animates, and hover is detected with a cheap global
@@ -62,7 +63,10 @@ swift build -c release && .build/release/OpenNotch --snapshot /tmp/opennotch-sho
 
 Requested only when a feature first needs them:
 
-- **Automation (Music / Spotify):** fetch album artwork and send play/pause/skip.
+- **Automation (Music / Spotify / your browser):** read what's playing (for browsers, the media tab's
+  title and URL) and send play/pause/skip to Music and Spotify.
+- **Accessibility:** only used to send the play/pause/next/previous media keys to browsers and other
+  apps. Asked for the first time you press one of those buttons.
 - **Calendars:** the Home tab's event list.
 - **Camera:** the Mirror tab.
 - **Bluetooth:** connect/disconnect notifications.
@@ -71,8 +75,11 @@ Because the app is ad-hoc signed, macOS may ask again after you rebuild it.
 
 ## Notes
 
-- On recent macOS versions Apple restricts third-party apps from reading system-wide now-playing
-  info. OpenNotch then falls back to Music and Spotify, which always work.
+- Recent macOS versions don't let third-party apps read the system "Now Playing" info
+  (MediaRemote). Instead of working around that protection, OpenNotch uses public APIs: CoreAudio
+  says which app is producing sound, and the browser's own AppleScript dictionary says which tab.
+  While a browser plays, the tab is re-read every 6 s so autoplay's next video shows up.
+- Run `.build/release/OpenNotch --now-playing` to print what the detector currently sees.
 - `@State` isn't used: in recent SDKs it's a macro that needs Xcode's plugin. A tiny `StateBox`
   observable keeps the project buildable with only the Command Line Tools.
 

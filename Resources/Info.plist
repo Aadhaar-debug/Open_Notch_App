@@ -29,7 +29,7 @@
     <key>NSHumanReadableCopyright</key>
     <string>MIT License</string>
     <key>NSAppleEventsUsageDescription</key>
-    <string>OpenNotch asks Music and Spotify for album artwork and sends them play/pause/skip commands.</string>
+    <string>OpenNotch reads what's playing in Music, Spotify and your browser's media tab (YouTube, Spotify Web, Netflix…) to show it in the notch, and sends Music and Spotify play/pause/skip commands.</string>
     <key>NSCalendarsFullAccessUsageDescription</key>
     <string>OpenNotch shows today's upcoming events in the notch.</string>
     <key>NSCalendarsUsageDescription</key>

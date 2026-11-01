@@ -38,6 +38,12 @@ struct NowPlayingView: View {
                     Text(media.album).font(.system(size: 11)).foregroundStyle(.gray.opacity(0.8)).lineLimit(1)
                 }
                 Spacer(minLength: 4)
+                if media.needsControlPermission {
+                    Text("To control browsers and other apps, allow OpenNotch in System Settings › Privacy & Security › Accessibility.")
+                        .font(.system(size: 10))
+                        .foregroundStyle(.orange)
+                        .lineLimit(2)
+                }
                 HStack(spacing: 22) {
                     control("backward.fill", size: 16) { media.send(.previous) }
                     control(media.isPlaying ? "pause.fill" : "play.fill", size: 22) { media.send(.playPause) }
@@ -50,6 +56,7 @@ struct NowPlayingView: View {
             }
             .frame(height: 104)
         }
+        .onAppear { media.refresh() }
     }
 
     private func control(_ symbol: String, size: CGFloat, action: @escaping () -> Void) -> some View {
