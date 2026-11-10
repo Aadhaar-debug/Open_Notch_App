@@ -14,7 +14,7 @@ struct StatsView: View {
                 GaugeTile(title: "Memory", symbol: "memorychip", value: s.memory, color: loadColor(s.memory),
                           detail: "\(bytes(s.memoryUsed)) / \(bytes(s.memoryTotal))"
                               + (s.swapUsed > 0 ? "\nswap \(bytes(s.swapUsed))" : "")) {
-                    EmptyView()
+                    Sparkline(values: stats.memoryHistory, maxValue: 1, color: loadColor(s.memory))
                 }
                 GaugeTile(title: "GPU", symbol: "square.stack.3d.up.fill", value: s.gpu ?? 0,
                           color: loadColor(s.gpu ?? 0), label: s.gpu == nil ? "n/a" : nil,

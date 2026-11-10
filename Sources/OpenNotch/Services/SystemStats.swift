@@ -32,6 +32,7 @@ final class SystemStats: ObservableObject {
 
     @Published private(set) var now = Snapshot()
     @Published private(set) var cpuHistory: [Double] = []
+    @Published private(set) var memoryHistory: [Double] = []
     @Published private(set) var gpuHistory: [Double] = []
     @Published private(set) var downHistory: [Double] = []
     @Published private(set) var upHistory: [Double] = []
@@ -82,6 +83,7 @@ final class SystemStats: ObservableObject {
         now = s
 
         push(&cpuHistory, s.cpu)
+        push(&memoryHistory, s.memory)
         push(&gpuHistory, s.gpu ?? 0)
         push(&downHistory, s.netDown)
         push(&upHistory, s.netUp)
