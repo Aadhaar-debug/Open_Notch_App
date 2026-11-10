@@ -114,8 +114,17 @@ final class SystemStats: ObservableObject {
         s.cpu = (user + system) / total
     }
 
-    /// "Memory Used" the way Activity Monitor counts it: app memory + wired + compressed.
+    /// Memory actually in use, from the kernel's memory-pressure level (the same figure as
+    /// `memory_pressure`'s "System-wide memory free percentage"). Cached files and other memory
+    /// macOS can reclaim instantly count as free. Falls back to app + wired + compressed.
     private func readMemory(into s: inout Snapshot) {
+        var level: Int32 = 0
+        var levelSize = MemoryLayout<Int32>.size
+        if sysctlbyname("kern.memorystatus_level", &level, &levelSize, nil, 0) == 0, (0...100).contains(level) {
+            s.memoryUsed = s.memoryTotal * UInt64(100 - level) / 100
+            readSwap(into: &s)
+            return
+        }
         var stats = vm_statistics64()
         var count = mach_msg_type_number_t(MemoryLayout<vm_statistics64>.size / MemoryLayout<integer_t>.size)
         let result = withUnsafeMutablePointer(to: &stats) {
@@ -128,6 +137,10 @@ final class SystemStats: ObservableObject {
             let app = UInt64(stats.internal_page_count) &- UInt64(stats.purgeable_count)
             s.memoryUsed = (app + UInt64(stats.wire_count) + UInt64(stats.compressor_page_count)) * page
         }
+        readSwap(into: &s)
+    }
+
+    private func readSwap(into s: inout Snapshot) {
         var swap = xsw_usage()
         var size = MemoryLayout<xsw_usage>.size
         if sysctlbyname("vm.swapusage", &swap, &size, nil, 0) == 0 { s.swapUsed = swap.xsu_used }
